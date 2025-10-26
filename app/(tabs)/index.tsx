@@ -1,20 +1,26 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  Dimensions,
   FlatList,
   ImageBackground,
+  Platform,
   SafeAreaView,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  ScrollView,
+  useWindowDimensions,
 } from "react-native";
+import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Link } from "expo-router";
 
 const HEADER_COLOR = "#b04570";
+const AUTO_SCROLL_INTERVAL = 5000;
+const CARD_ASPECT_RATIO = 0.56;
+const MAX_CARD_WIDTH = 720;
+const MIN_CARD_WIDTH = 260;
+const MIN_CARD_HEIGHT = 180;
 
 const navItems = ["Home", "About", "Features", "Pricing", "Contact Us"] as const;
 
@@ -42,6 +48,8 @@ const carouselItems = [
   },
 ];
 
+const TOTAL_SLIDES = carouselItems.length;
+
 const actionButtons = [
   {
     id: "volunteers",
@@ -62,6 +70,92 @@ const actionButtons = [
 
 export default function Index() {
   const [activeNav, setActiveNav] = useState<typeof navItems[number]>("Home");
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const { width: rawWindowWidth } = useWindowDimensions();
+  const windowWidth = Math.max(rawWindowWidth, 1);
+  const cardWidth = Math.min(Math.max(windowWidth - 32, MIN_CARD_WIDTH), MAX_CARD_WIDTH);
+  const cardHeight = Math.max(cardWidth * CARD_ASPECT_RATIO, MIN_CARD_HEIGHT);
+  const flatListRef = useRef<FlatList<typeof carouselItems[number]>>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const prevWidthRef = useRef(windowWidth);
+  const isWeb = Platform.OS === "web";
+
+  const clearAutoScroll = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, []);
+
+  const startAutoScroll = useCallback(() => {
+    clearAutoScroll();
+    if (TOTAL_SLIDES <= 1) {
+      return;
+    }
+
+    intervalRef.current = setInterval(() => {
+      setCurrentIndex((prev) => {
+        const nextIndex = (prev + 1) % TOTAL_SLIDES;
+        flatListRef.current?.scrollToOffset({
+          offset: windowWidth * nextIndex,
+          animated: true,
+        });
+        return nextIndex;
+      });
+    }, AUTO_SCROLL_INTERVAL);
+  }, [clearAutoScroll, windowWidth, TOTAL_SLIDES]);
+
+  useEffect(() => {
+    startAutoScroll();
+    return clearAutoScroll;
+  }, [startAutoScroll, clearAutoScroll]);
+
+  useEffect(() => {
+    if (prevWidthRef.current !== windowWidth) {
+      flatListRef.current?.scrollToOffset({
+        offset: windowWidth * currentIndex,
+        animated: false,
+      });
+      prevWidthRef.current = windowWidth;
+    }
+  }, [windowWidth, currentIndex]);
+
+  const handleScrollBeginDrag = useCallback(() => {
+    clearAutoScroll();
+  }, [clearAutoScroll]);
+
+  const handleMomentumScrollEnd = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const viewWidth = event.nativeEvent.layoutMeasurement.width || windowWidth;
+      const rawIndex = event.nativeEvent.contentOffset.x / viewWidth;
+      const boundedIndex = Math.max(0, Math.min(TOTAL_SLIDES - 1, Math.round(rawIndex)));
+
+      if (boundedIndex !== currentIndex) {
+        setCurrentIndex(boundedIndex);
+      }
+
+      startAutoScroll();
+    },
+    [windowWidth, currentIndex, startAutoScroll, TOTAL_SLIDES]
+  );
+
+  const goToSlide = useCallback(
+    (direction: number) => {
+      if (TOTAL_SLIDES <= 1) {
+        return;
+      }
+
+      const targetIndex = (currentIndex + direction + TOTAL_SLIDES) % TOTAL_SLIDES;
+      clearAutoScroll();
+      flatListRef.current?.scrollToOffset({
+        offset: windowWidth * targetIndex,
+        animated: true,
+      });
+      setCurrentIndex(targetIndex);
+      startAutoScroll();
+    },
+    [currentIndex, windowWidth, clearAutoScroll, startAutoScroll, TOTAL_SLIDES]
+  );
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -96,22 +190,55 @@ export default function Index() {
           })}
         </View>
 
-        <View style={styles.carouselContainer}>
+  <View style={[styles.carouselContainer, { height: cardHeight }]}> 
           <FlatList
+            ref={flatListRef}
             data={carouselItems}
             keyExtractor={(item) => item.id}
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}
+            onScrollBeginDrag={handleScrollBeginDrag}
+            onMomentumScrollEnd={handleMomentumScrollEnd}
+            getItemLayout={(_, index) => ({ length: windowWidth, offset: windowWidth * index, index })}
             renderItem={({ item }) => (
-              <ImageBackground source={{ uri: item.image }} style={styles.carouselImage}>
-                <View style={styles.carouselOverlay}>
-                  <Text style={styles.carouselTitle}>{item.title}</Text>
-                  <Text style={styles.carouselSubtitle}>{item.subtitle}</Text>
-                </View>
-              </ImageBackground>
+              <View style={[styles.carouselSlide, { width: windowWidth }]}> 
+                <ImageBackground
+                  source={{ uri: item.image }}
+                  style={[styles.carouselImage, { width: cardWidth, height: cardHeight }]}
+                  imageStyle={styles.carouselImageBackground}
+                  resizeMode="cover"
+                >
+                  <View style={styles.carouselOverlay}>
+                    <Text style={styles.carouselTitle}>{item.title}</Text>
+                    <Text style={styles.carouselSubtitle}>{item.subtitle}</Text>
+                  </View>
+                </ImageBackground>
+              </View>
             )}
           />
+          {isWeb && (
+            <View style={styles.carouselArrows} pointerEvents="box-none">
+              <TouchableOpacity
+                accessibilityLabel="Previous highlight"
+                accessibilityRole="button"
+                style={styles.carouselArrowButton}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                onPress={() => goToSlide(-1)}
+              >
+                <Ionicons name="chevron-back" size={22} color={HEADER_COLOR} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                accessibilityLabel="Next highlight"
+                accessibilityRole="button"
+                style={styles.carouselArrowButton}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                onPress={() => goToSlide(1)}
+              >
+                <Ionicons name="chevron-forward" size={22} color={HEADER_COLOR} />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
             
         <View style={styles.actionSection}>
@@ -135,8 +262,6 @@ export default function Index() {
     </SafeAreaView>
   );
 }
-
-const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -210,14 +335,20 @@ const styles = StyleSheet.create({
   },
   carouselContainer: {
     marginTop: 12,
-    height: width * 0.5,
+    position: "relative",
+    justifyContent: "center",
+  },
+  carouselSlide: {
+    alignItems: "center",
+    justifyContent: "center",
   },
   carouselImage: {
-    width: width - 32,
-    marginHorizontal: 16,
     borderRadius: 16,
     overflow: "hidden",
     justifyContent: "flex-end",
+  },
+  carouselImageBackground: {
+    borderRadius: 16,
   },
   carouselOverlay: {
     backgroundColor: "rgba(176, 69, 112, 0.55)",
@@ -232,6 +363,26 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 14,
     marginTop: 4,
+  },
+  carouselArrows: {
+    position: "absolute",
+    top: "50%",
+    left: 0,
+    right: 0,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 24,
+    transform: [{ translateY: -21 }],
+  },
+  carouselArrowButton: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: "rgba(255,255,255,0.92)",
+    borderWidth: 1,
+    borderColor: "rgba(176,69,112,0.35)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   actionSection: {
     marginTop: 24,
