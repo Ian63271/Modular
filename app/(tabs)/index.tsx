@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Link } from "expo-router";
 
 const HEADER_COLOR = "#b04570";
 const AUTO_SCROLL_INTERVAL = 5000;
@@ -54,19 +55,24 @@ const actionButtons = [
   {
     id: "volunteers",
     label: "Voluntariados",
-    icon: "people-outline" as const,
+    icon: "people-outline",
+    href: "/(tabs)/voluntariados",
   },
   {
     id: "workshops",
     label: "Talleres",
-    icon: "brush-outline" as const,
+    icon: "brush-outline",
+    href: "/(tabs)/talleres",
   },
   {
     id: "dropoff",
     label: "Unidades\nreceptoras",
-    icon: "heart-circle-outline" as const,
+    icon: "heart-circle-outline",
+    href: "/(tabs)/unidades",
   },
-];
+] as const;
+
+type ActionButton = (typeof actionButtons)[number];
 
 export default function Index() {
   const [activeNav, setActiveNav] = useState<typeof navItems[number]>("Home");
@@ -240,22 +246,22 @@ export default function Index() {
             </View>
           )}
         </View>
-            
+
         <View style={styles.actionSection}>
-          {actionButtons.map((action) => (
-            <TouchableOpacity
-              key={action.id}
-              style={styles.actionButton}
-              activeOpacity={0.85}
-              onPress={() => {
-                // Navigation placeholder for future screens.
-              }}
-            >
-              <View style={styles.actionIconWrapper}>
-                <Ionicons name={action.icon} size={28} color={HEADER_COLOR} />
-              </View>
-              <Text style={styles.actionLabel}>{action.label}</Text>
-            </TouchableOpacity>
+          {actionButtons.map((action: ActionButton) => (
+            <Link key={action.id} href={action.href} asChild>
+              <TouchableOpacity
+                style={styles.actionButton}
+                activeOpacity={0.85}
+                accessibilityRole="button"
+                accessibilityHint={`Ir a la sección ${action.label.replace("\n", " ")}`}
+              >
+                <View style={styles.actionIconWrapper}>
+                  <Ionicons name={action.icon} size={28} color={HEADER_COLOR} />
+                </View>
+                <Text style={styles.actionLabel}>{action.label}</Text>
+              </TouchableOpacity>
+            </Link>
           ))}
         </View>
       </ScrollView>
