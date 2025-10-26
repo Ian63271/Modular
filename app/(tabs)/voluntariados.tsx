@@ -12,6 +12,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Link } from "expo-router";
 
 const HEADER_COLOR = "#b04570";
 
@@ -64,14 +65,14 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="light-content" />
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <StatusBar barStyle="light-content" backgroundColor={HEADER_COLOR} />
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContainer}>
         <View style={styles.header}>
           <View style={styles.brandContainer}>
             <View style={styles.logoBadge}>
               <Ionicons name="hand-left" size={24} color="#fff" />
             </View>
-            <Text style={styles.brandText}>Conexión Social</Text>
+            <Text style={styles.brandText}>Voluntariados</Text>
           </View>
           <TouchableOpacity style={styles.searchButton} activeOpacity={0.8}>
             <Ionicons name="search" size={20} color="#fff" />
@@ -96,9 +97,23 @@ export default function Index() {
         </View>
 
         <View style={styles.carouselContainer}>
-         
+          <FlatList
+            data={carouselItems}
+            keyExtractor={(item) => item.id}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <ImageBackground source={{ uri: item.image }} style={styles.carouselImage}>
+                <View style={styles.carouselOverlay}>
+                  <Text style={styles.carouselTitle}>{item.title}</Text>
+                  <Text style={styles.carouselSubtitle}>{item.subtitle}</Text>
+                </View>
+              </ImageBackground>
+            )}
+          />
         </View>
-
+            
         <View style={styles.actionSection}>
           {actionButtons.map((action) => (
             <TouchableOpacity
@@ -125,6 +140,10 @@ const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   safeArea: {
+    flex: 1,
+    backgroundColor: HEADER_COLOR,
+  },
+  scrollView: {
     flex: 1,
     backgroundColor: "#fff",
   },

@@ -18,13 +18,28 @@ export default function TabsLayout() {
           name= { focused ? "home-sharp" : "home-outline"} 
           size={30} 
           color={color}/>,
-      }} 
-      />    
-      <Tabs.Screen name="about" options={{
-        title: "Acerca de",
-        tabBarIcon: ({ focused, color}) => 
+      }} />    
+      <Tabs.Screen name="voluntariados" options={{
+        title: "Voluntariados",
+        tabBarIcon: ({ focused, color}) =>
         <Ionicons 
-          name= { focused ? "information-circle-sharp" : "information-circle-outline"} 
+          name= { focused ? "people-sharp" : "people-outline"} 
+          size={30} 
+          color={color}/>,
+      }} />
+      <Tabs.Screen name="talleres" options={{
+        title: "Talleres",
+        tabBarIcon: ({ focused, color}) =>
+        <Ionicons 
+          name= { focused ? "brush-sharp" : "brush-outline"} 
+          size={30} 
+          color={color}/>,
+      }} />
+      <Tabs.Screen name="unidades" options={{
+        title: "Unidades",
+        tabBarIcon: ({ focused, color}) =>
+        <Ionicons 
+          name= { focused ? "heart-circle-sharp" : "heart-circle-outline"} 
           size={30} 
           color={color}/>,
       }} />
