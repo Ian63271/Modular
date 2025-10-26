@@ -96,21 +96,7 @@ export default function Index() {
         </View>
 
         <View style={styles.carouselContainer}>
-          <FlatList
-            data={carouselItems}
-            keyExtractor={(item) => item.id}
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <ImageBackground source={{ uri: item.image }} style={styles.carouselImage}>
-                <View style={styles.carouselOverlay}>
-                  <Text style={styles.carouselTitle}>{item.title}</Text>
-                  <Text style={styles.carouselSubtitle}>{item.subtitle}</Text>
-                </View>
-              </ImageBackground>
-            )}
-          />
+         
         </View>
 
         <View style={styles.actionSection}>
