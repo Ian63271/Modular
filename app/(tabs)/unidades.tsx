@@ -11,49 +11,87 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { WebNavigation } from "../../components/web-navigation";
 
 const HEADER_COLOR = "#b04570";
 const BORDER_COLOR = "#c7a6c0";
 const TEXT_PRIMARY = "#2f3542";
 const TEXT_SECONDARY = "#4d5866";
-const CHIP_BG = "#f2d7e3";
-const NAV_ITEMS = ["Home", "About", "Features", "Pricing", "Contact us"] as const;
 
-const EVENTS = [
+const UNITS = [
   {
-    id: "guitarra",
-    title: "Clases de Guitarra Plaza Civica Miravalle",
-    organization: "Walter Martinez",
-    verified: true,
-    date: "Miercoles 04:00 p.m",
-    distanceKm: 3,
-    icon: "musical-notes" as const,
+    id: "imss-92",
+    name: "IMSS CLINICA 92",
+    address: "Av. Gobernador Curiel",
+    distanceKm: 1.5,
+    icon: "medkit" as const,
+    contact: "33 *** *** **",
+    notes: "Ubicacion: Av. Gobernador Curiel #123, Zona Industrial. Contacto disponible de 8:00 a 16:00 hrs.",
+    programs: [
+      {
+        id: "blood-general",
+        title: "Donacion de sangre (todas las tipologias)",
+        coordinator: "Jefatura de Consultas",
+        schedule: "Horarios multiples (consultar ficha informativa)",
+        icon: "water" as const,
+      },
+      {
+        id: "blood-type-a-neg",
+        title: "Donacion de sangre tipo A negativo",
+        coordinator: "Familia Sanchez Romero",
+        schedule: "Horarios multiples (consultar ficha informativa)",
+        icon: "water" as const,
+      },
+      {
+        id: "medical-supplies",
+        title: "Recepcion de insumos medicos",
+        coordinator: "Unidad de Inventarios",
+        schedule: "Martes 10:00 a.m. - 01:00 p.m.",
+        icon: "medical" as const,
+      },
+    ],
   },
   {
-    id: "ingles",
-    title: "Clases de Ingles World",
-    organization: "World A&B",
-    verified: false,
-    date: "Multiples horarios (consultar ficha)",
-    distanceKm: 1.4,
-    icon: "language" as const,
+    id: "caritas-miravalle",
+    name: "Caritas Miravalle",
+    address: "Sra. Conchita",
+    distanceKm: 0.02,
+    icon: "people-circle" as const,
+    contact: "33 555 889 12",
+    notes: "Ubicacion: Calle Solidaridad #45, Col. Miravalle. Contacto disponible de 9:00 a 17:00 hrs.",
+    programs: [
+      {
+        id: "food-bank",
+        title: "Recepcion de alimentos",
+        coordinator: "Coordinacion de Acopio",
+        schedule: "Lunes a viernes 9:00 a.m. - 5:00 p.m.",
+        icon: "restaurant" as const,
+      },
+      {
+        id: "family-support",
+        title: "Atencion familiar integral",
+        coordinator: "Equipo Psicosocial",
+        schedule: "Citas bajo agenda",
+        icon: "chatbubble-ellipses" as const,
+      },
+    ],
   },
 ] as const;
 
-type NavItem = (typeof NAV_ITEMS)[number];
-type EventItem = (typeof EVENTS)[number];
+type UnitItem = (typeof UNITS)[number];
+type ProgramItem = UnitItem["programs"][number];
 
 export default function UnidadesScreen() {
   const { width } = useWindowDimensions();
-  const [activeNav, setActiveNav] = useState<NavItem>("Home");
   const [radius, setRadius] = useState(10);
   const [showRadiusModal, setShowRadiusModal] = useState(false);
   const [dismissedRadius, setDismissedRadius] = useState<number | null>(null);
+  const [selectedUnit, setSelectedUnit] = useState<UnitItem | null>(null);
 
-  const eventCardWidth = useMemo(() => Math.min(width - 24, 720), [width]);
-  const filteredEvents = useMemo(() => EVENTS.filter((item) => item.distanceKm <= radius), [radius]);
+  const cardWidth = useMemo(() => Math.min(width - 24, 720), [width]);
+  const filteredUnits = useMemo(() => UNITS.filter((unit) => unit.distanceKm <= radius), [radius]);
   const nearestDistance = useMemo<number | null>(() => {
-    const distances = EVENTS.map((event) => event.distanceKm);
+    const distances = UNITS.map((unit) => unit.distanceKm);
     return distances.length ? Math.min(...distances) : null;
   }, []);
 
@@ -61,7 +99,7 @@ export default function UnidadesScreen() {
   const decrementRadius = () => setRadius((value) => Math.max(value - 1, 1));
 
   useEffect(() => {
-    if (filteredEvents.length > 0) {
+    if (filteredUnits.length > 0) {
       setShowRadiusModal(false);
       setDismissedRadius(null);
       return;
@@ -70,7 +108,7 @@ export default function UnidadesScreen() {
     if (dismissedRadius !== radius) {
       setShowRadiusModal(true);
     }
-  }, [filteredEvents.length, radius, dismissedRadius]);
+  }, [filteredUnits.length, radius, dismissedRadius]);
 
   const handleDismissModal = () => {
     setDismissedRadius(radius);
@@ -93,51 +131,36 @@ export default function UnidadesScreen() {
           <View style={styles.logoBadge}>
             <Ionicons name="hand-left" size={24} color="#fff" />
           </View>
-          <Text style={styles.brandText}>Conexión Social</Text>
+          <Text style={styles.brandText}>Conexion Social</Text>
         </View>
         <TouchableOpacity style={styles.searchButton} activeOpacity={0.8}>
           <Ionicons name="search" size={20} color="#fff" />
         </TouchableOpacity>
       </View>
 
-      <View style={styles.navBar}>
-        {NAV_ITEMS.map((item) => {
-          const isActive = activeNav === item;
-          return (
-            <TouchableOpacity
-              key={item}
-              accessibilityRole="button"
-              accessibilityState={{ selected: isActive }}
-              style={[styles.navButton, isActive && styles.navButtonActive]}
-              onPress={() => setActiveNav(item)}
-            >
-              <Text style={[styles.navText, isActive && styles.navTextActive]}>{item}</Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+      <WebNavigation />
 
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={[styles.scrollContent, { paddingHorizontal: Math.max((width - eventCardWidth) / 2, 12) }]}
+        contentContainerStyle={[styles.scrollContent, { paddingHorizontal: Math.max((width - cardWidth) / 2, 12) }]}
       >
         <Text style={styles.screenTitle}>Unidades Receptoras</Text>
 
-        {filteredEvents.length > 0 ? (
-          <View style={[styles.eventList, { width: eventCardWidth }]}>
-            {filteredEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
+        {filteredUnits.length > 0 ? (
+          <View style={[styles.unitList, { width: cardWidth }]}>
+            {filteredUnits.map((unit) => (
+              <UnitCard key={unit.id} unit={unit} onOpenDetails={setSelectedUnit} />
             ))}
           </View>
         ) : (
           <View style={styles.emptyState}>
             <Ionicons name="location-outline" size={140} color="#7a7a7a" />
             <Text style={styles.emptyMessage}>
-              No se encontró ningún programa en el radio seleccionado [{" "}
+              No se encontro ninguna unidad en el radio seleccionado [{" "}
               <Text style={styles.emptyMessageStrong}>{radius} km</Text>
               ].
             </Text>
-            <Text style={styles.emptyPrompt}>¿Desea ampliar rango de búsqueda?</Text>
+            <Text style={styles.emptyPrompt}>¿Desea ampliar rango de busqueda?</Text>
             <View style={styles.emptyActions}>
               <TouchableOpacity style={[styles.emptyButton, styles.emptyButtonPrimary]} onPress={handleExpandSearch}>
                 <Text style={styles.emptyButtonPrimaryText}>Aceptar</Text>
@@ -191,11 +214,11 @@ export default function UnidadesScreen() {
           <View style={styles.modalCard}>
             <Ionicons name="location-outline" size={120} color="#666" />
             <Text style={styles.modalMessage}>
-              No se encontró ningún programa dentro del radio seleccionado [{" "}
+              No se encontro ninguna unidad dentro del radio seleccionado [{" "}
               <Text style={styles.emptyMessageStrong}>{radius} km</Text>
               ].
             </Text>
-            <Text style={styles.modalPrompt}>¿Desea ampliar el rango de búsqueda?</Text>
+            <Text style={styles.modalPrompt}>¿Desea ampliar el rango de busqueda?</Text>
             <View style={styles.emptyActions}>
               <TouchableOpacity style={[styles.emptyButton, styles.emptyButtonPrimary]} onPress={handleExpandSearch}>
                 <Text style={styles.emptyButtonPrimaryText}>Aceptar</Text>
@@ -207,51 +230,113 @@ export default function UnidadesScreen() {
           </View>
         </View>
       </Modal>
+
+      <UnitDetailsModal unit={selectedUnit} onClose={() => setSelectedUnit(null)} />
     </SafeAreaView>
   );
 }
 
-function EventCard({ event }: { event: EventItem }) {
+function UnitCard({ unit, onOpenDetails }: { unit: UnitItem; onOpenDetails: (unit: UnitItem) => void }) {
   return (
-    <View style={styles.eventCard}>
-      <View style={styles.eventIconWrapper}>
-        <Ionicons name={event.icon} size={36} color={TEXT_PRIMARY} />
+    <View style={styles.unitCard}>
+      <View style={styles.unitIconWrapper}>
+        <Ionicons name={unit.icon} size={36} color={TEXT_PRIMARY} />
       </View>
 
-      <View style={styles.eventInfo}>
-        <Text style={styles.eventTitle}>{event.title}</Text>
-        <View style={styles.eventOrganizationRow}>
-          <Text style={styles.eventOrganization}>{event.organization}</Text>
-          {event.verified && (
-            <Ionicons
-              name="checkmark-circle"
-              size={16}
-              color="#4c91f7"
-              style={styles.eventVerifiedIcon}
-            />
-          )}
+      <View style={styles.unitInfo}>
+        <Text style={styles.unitTitle}>{unit.name}</Text>
+        <View style={styles.unitMetaRow}>
+          <Ionicons name="location" size={14} color={TEXT_SECONDARY} />
+          <Text style={styles.unitMetaText}>{unit.address}</Text>
         </View>
-        <View style={styles.eventMetaRow}>
-          <View style={styles.eventMetaItem}>
-            <Ionicons name="calendar" size={14} color={TEXT_SECONDARY} />
-            <Text style={styles.eventMetaText}>{event.date}</Text>
-          </View>
-          <View style={styles.eventMetaItem}>
-            <Ionicons name="navigate" size={14} color={TEXT_SECONDARY} />
-            <Text style={styles.eventMetaText}>{event.distanceKm} km</Text>
-          </View>
+        <View style={styles.unitMetaRow}>
+          <Ionicons name="navigate" size={14} color={TEXT_SECONDARY} />
+          <Text style={styles.unitMetaText}>{unit.distanceKm} km</Text>
+        </View>
+        <View style={styles.unitMetaRow}>
+          <Ionicons name="call" size={14} color={TEXT_SECONDARY} />
+          <Text style={styles.unitMetaText}>{unit.contact}</Text>
         </View>
       </View>
 
-      <View style={styles.eventActions}>
-        <TouchableOpacity style={styles.eventActionChip} accessibilityRole="button">
-          <Ionicons name="image" size={20} color={TEXT_PRIMARY} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.eventActionChip} accessibilityRole="button">
-          <Ionicons name="document-text" size={20} color={TEXT_PRIMARY} />
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        style={styles.detailsButton}
+        accessibilityRole="button"
+        accessibilityLabel={`Ver detalles de ${unit.name}`}
+        onPress={() => onOpenDetails(unit)}
+      >
+        <Text style={styles.detailsButtonText}>Detalles</Text>
+      </TouchableOpacity>
     </View>
+  );
+}
+
+function UnitDetailsModal({ unit, onClose }: { unit: UnitItem | null; onClose: () => void }) {
+  return (
+    <Modal visible={Boolean(unit)} animationType="slide" transparent statusBarTranslucent onRequestClose={onClose}>
+      <View style={styles.detailsBackdrop}>
+        <View style={styles.detailsCard}>
+          <ScrollView contentContainerStyle={styles.detailsContent}>
+            {unit && (
+              <View style={styles.detailsBody}>
+                <Text style={styles.detailsTitle}>{unit.name}</Text>
+                <View style={styles.detailsSummaryRow}>
+                  <View style={styles.detailsBadge}>
+                    <Ionicons name={unit.icon} size={34} color={HEADER_COLOR} />
+                  </View>
+                  <View style={styles.detailsMeta}>
+                    <View style={styles.detailsMetaItem}>
+                      <Ionicons name="location" size={18} color={TEXT_PRIMARY} />
+                      <Text style={styles.detailsMetaText}>{unit.address}</Text>
+                    </View>
+                    <View style={styles.detailsMetaItem}>
+                      <Ionicons name="navigate" size={18} color={TEXT_PRIMARY} />
+                      <Text style={styles.detailsMetaText}>{unit.distanceKm} km</Text>
+                    </View>
+                    <View style={styles.detailsMetaItem}>
+                      <Ionicons name="call" size={18} color={TEXT_PRIMARY} />
+                      <Text style={styles.detailsMetaText}>{unit.contact}</Text>
+                    </View>
+                  </View>
+                </View>
+
+                <View style={styles.detailsNotesBox}>
+                  <Text style={styles.detailsNotes}>{unit.notes}</Text>
+                </View>
+
+                <Text style={styles.programsHeading}>Programas</Text>
+
+                <View style={styles.programList}>
+                  {unit.programs.map((program: ProgramItem) => (
+                    <View key={program.id} style={styles.programCard}>
+                      <View style={styles.programIconWrapper}>
+                        <Ionicons name={program.icon} size={28} color={TEXT_PRIMARY} />
+                      </View>
+                      <View style={styles.programInfo}>
+                        <Text style={styles.programTitle}>{program.title}</Text>
+                        <Text style={styles.programCoordinator}>{program.coordinator}</Text>
+                        <Text style={styles.programSchedule}>{program.schedule}</Text>
+                      </View>
+                      <View style={styles.programActions}>
+                        <TouchableOpacity style={styles.programActionChip} accessibilityRole="button">
+                          <Ionicons name="image" size={20} color={TEXT_PRIMARY} />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.programActionChip} accessibilityRole="button">
+                          <Ionicons name="document-text" size={20} color={TEXT_PRIMARY} />
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            )}
+          </ScrollView>
+          <TouchableOpacity style={styles.detailsCloseButton} onPress={onClose} accessibilityRole="button">
+            <Text style={styles.detailsCloseText}>Cerrar</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
   );
 }
 
@@ -295,29 +380,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  navBar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: "#fff",
-  },
-  navButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 18,
-  },
-  navButtonActive: {
-    backgroundColor: CHIP_BG,
-  },
-  navText: {
-    color: HEADER_COLOR,
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  navTextActive: {
-    color: HEADER_COLOR,
-  },
   scrollView: {
     flex: 1,
     backgroundColor: "#fff",
@@ -332,11 +394,11 @@ const styles = StyleSheet.create({
     color: TEXT_PRIMARY,
     textAlign: "center",
   },
-  eventList: {
+  unitList: {
     alignSelf: "center",
     gap: 18,
   },
-  eventCard: {
+  unitCard: {
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
@@ -349,8 +411,9 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
     elevation: 2,
+    gap: 16,
   },
-  eventIconWrapper: {
+  unitIconWrapper: {
     width: 64,
     height: 64,
     borderRadius: 12,
@@ -358,55 +421,35 @@ const styles = StyleSheet.create({
     borderColor: BORDER_COLOR,
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 16,
   },
-  eventInfo: {
+  unitInfo: {
     flex: 1,
+    gap: 6,
   },
-  eventTitle: {
+  unitTitle: {
     fontSize: 16,
     fontWeight: "700",
     color: TEXT_PRIMARY,
   },
-  eventOrganizationRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 4,
-  },
-  eventOrganization: {
-    fontSize: 13,
-    color: TEXT_PRIMARY,
-  },
-  eventVerifiedIcon: {
-    marginLeft: 6,
-  },
-  eventMetaRow: {
-    flexDirection: "row",
-    gap: 16,
-    marginTop: 8,
-  },
-  eventMetaItem: {
+  unitMetaRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
   },
-  eventMetaText: {
+  unitMetaText: {
     fontSize: 13,
     color: TEXT_SECONDARY,
   },
-  eventActions: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    marginLeft: 16,
+  detailsButton: {
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 20,
+    backgroundColor: HEADER_COLOR,
   },
-  eventActionChip: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#e8ecf3",
+  detailsButtonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "600",
   },
   emptyState: {
     alignItems: "center",
@@ -561,6 +604,150 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: TEXT_SECONDARY,
     textAlign: "center",
+  },
+  detailsBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.35)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
+  },
+  detailsCard: {
+    width: "100%",
+    maxWidth: 640,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    paddingTop: 24,
+    paddingBottom: 12,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOpacity: 0.25,
+    shadowOffset: { width: 0, height: 6 },
+    shadowRadius: 16,
+    elevation: 12,
+  },
+  detailsContent: {
+    paddingHorizontal: 24,
+    paddingBottom: 16,
+    gap: 20,
+  },
+  detailsBody: {
+    gap: 18,
+  },
+  detailsTitle: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: TEXT_PRIMARY,
+    textAlign: "center",
+  },
+  detailsSummaryRow: {
+    flexDirection: "row",
+    gap: 16,
+    alignItems: "flex-start",
+  },
+  detailsBadge: {
+    width: 60,
+    height: 60,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: BORDER_COLOR,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f7f0f4",
+  },
+  detailsMeta: {
+    flex: 1,
+    gap: 8,
+  },
+  detailsMetaItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  detailsMetaText: {
+    fontSize: 14,
+    color: TEXT_PRIMARY,
+  },
+  detailsNotesBox: {
+    borderWidth: 1,
+    borderColor: BORDER_COLOR,
+    borderRadius: 12,
+    padding: 14,
+    backgroundColor: "#faf5f7",
+  },
+  detailsNotes: {
+    fontSize: 14,
+    color: TEXT_SECONDARY,
+    lineHeight: 20,
+  },
+  programsHeading: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: TEXT_PRIMARY,
+  },
+  programList: {
+    gap: 16,
+  },
+  programCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: BORDER_COLOR,
+    borderRadius: 12,
+    padding: 14,
+    backgroundColor: "#fff",
+    gap: 14,
+  },
+  programIconWrapper: {
+    width: 52,
+    height: 52,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: BORDER_COLOR,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f1f4f9",
+  },
+  programInfo: {
+    flex: 1,
+    gap: 4,
+  },
+  programTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: TEXT_PRIMARY,
+  },
+  programCoordinator: {
+    fontSize: 13,
+    color: TEXT_PRIMARY,
+  },
+  programSchedule: {
+    fontSize: 12,
+    color: TEXT_SECONDARY,
+  },
+  programActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  programActionChip: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#e6e9f2",
+  },
+  detailsCloseButton: {
+    marginTop: 8,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    alignSelf: "center",
+  },
+  detailsCloseText: {
+    color: HEADER_COLOR,
+    fontSize: 16,
+    fontWeight: "700",
   },
 });
 
