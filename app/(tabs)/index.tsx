@@ -15,6 +15,7 @@ import {
 import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
+import { WebNavigation } from "../../components/web-navigation";
 
 const HEADER_COLOR = "#b04570";
 const AUTO_SCROLL_INTERVAL = 5000;
@@ -22,8 +23,6 @@ const CARD_ASPECT_RATIO = 0.56;
 const MAX_CARD_WIDTH = 720;
 const MIN_CARD_WIDTH = 260;
 const MIN_CARD_HEIGHT = 180;
-
-const navItems = ["Home", "About", "Features", "Pricing", "Contact Us"] as const;
 
 const carouselItems = [
   {
@@ -75,7 +74,6 @@ const actionButtons = [
 type ActionButton = (typeof actionButtons)[number];
 
 export default function Index() {
-  const [activeNav, setActiveNav] = useState<typeof navItems[number]>("Home");
   const [currentIndex, setCurrentIndex] = useState(0);
   const { width: rawWindowWidth } = useWindowDimensions();
   const windowWidth = Math.max(rawWindowWidth, 1);
@@ -179,22 +177,7 @@ export default function Index() {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.navBar}>
-          {navItems.map((item) => {
-            const isActive = activeNav === item;
-            return (
-              <TouchableOpacity
-                key={item}
-                accessibilityRole="button"
-                accessibilityState={{ selected: isActive }}
-                onPress={() => setActiveNav(item)}
-                style={[styles.navButton, isActive && styles.navButtonActive]}
-              >
-                <Text style={[styles.navText, isActive && styles.navTextActive]}>{item}</Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+        <WebNavigation />
 
   <View style={[styles.carouselContainer, { height: cardHeight }]}> 
           <FlatList
@@ -315,29 +298,6 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.4)",
     alignItems: "center",
     justifyContent: "center",
-  },
-  navBar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: "#fff",
-  },
-  navButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 18,
-  },
-  navButtonActive: {
-    backgroundColor: "#f2d7e3",
-  },
-  navText: {
-    color: HEADER_COLOR,
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  navTextActive: {
-    color: HEADER_COLOR,
   },
   carouselContainer: {
     marginTop: 12,

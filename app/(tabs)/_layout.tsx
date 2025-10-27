@@ -1,16 +1,19 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import { Platform } from "react-native";
 
 const HEADER_COLOR = "#b04570";
 
 export default function TabsLayout() {
+  const isWeb = Platform.OS === "web";
   return (
-    <Tabs 
-    screenOptions={{
-      tabBarActiveTintColor: HEADER_COLOR,
-      headerShown: false,
-      tabBarStyle: { borderTopColor: HEADER_COLOR },
-    }}> 
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: HEADER_COLOR,
+        headerShown: false,
+        tabBarStyle: isWeb ? { display: "none" } : { borderTopColor: HEADER_COLOR },
+      }}
+    >
       <Tabs.Screen name="index" options={{
         title: "Inicio",
         tabBarIcon: ({ focused, color}) => 

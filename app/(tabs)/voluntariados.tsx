@@ -11,14 +11,12 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { WebNavigation } from "../../components/web-navigation";
 
 const HEADER_COLOR = "#b04570";
 const BORDER_COLOR = "#c7a6c0";
 const TEXT_PRIMARY = "#2f3542";
 const TEXT_SECONDARY = "#4d5866";
-const CHIP_BG = "#f2d7e3";
-const NAV_ITEMS = ["Home", "About", "Features", "Pricing", "Contact us"] as const;
-
 const EVENTS = [
   {
     id: "reforestacion",
@@ -40,12 +38,10 @@ const EVENTS = [
   },
 ] as const;
 
-type NavItem = (typeof NAV_ITEMS)[number];
 type EventItem = (typeof EVENTS)[number];
 
 export default function VoluntariadosScreen() {
   const { width } = useWindowDimensions();
-  const [activeNav, setActiveNav] = useState<NavItem>("Home");
   const [radius, setRadius] = useState(10);
   const [showRadiusModal, setShowRadiusModal] = useState(false);
   const [dismissedRadius, setDismissedRadius] = useState<number | null>(null);
@@ -100,22 +96,7 @@ export default function VoluntariadosScreen() {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.navBar}>
-        {NAV_ITEMS.map((item) => {
-          const isActive = activeNav === item;
-          return (
-            <TouchableOpacity
-              key={item}
-              accessibilityRole="button"
-              accessibilityState={{ selected: isActive }}
-              style={[styles.navButton, isActive && styles.navButtonActive]}
-              onPress={() => setActiveNav(item)}
-            >
-              <Text style={[styles.navText, isActive && styles.navTextActive]}>{item}</Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+      <WebNavigation />
 
       <ScrollView
         style={styles.scrollView}
@@ -294,29 +275,6 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.4)",
     alignItems: "center",
     justifyContent: "center",
-  },
-  navBar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: "#fff",
-  },
-  navButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 18,
-  },
-  navButtonActive: {
-    backgroundColor: CHIP_BG,
-  },
-  navText: {
-    color: HEADER_COLOR,
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  navTextActive: {
-    color: HEADER_COLOR,
   },
   scrollView: {
     flex: 1,
