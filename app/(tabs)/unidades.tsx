@@ -11,6 +11,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { WebNavigation } from "../../components/web-navigation";
 
 const HEADER_COLOR = "#b04570";
@@ -82,6 +83,7 @@ type UnitItem = (typeof UNITS)[number];
 type ProgramItem = UnitItem["programs"][number];
 
 export default function UnidadesScreen() {
+  const router = useRouter();
   const { width } = useWindowDimensions();
   const [radius, setRadius] = useState(10);
   const [showRadiusModal, setShowRadiusModal] = useState(false);
@@ -127,12 +129,17 @@ export default function UnidadesScreen() {
       <StatusBar barStyle="light-content" backgroundColor={HEADER_COLOR} />
 
       <View style={styles.header}>
-        <View style={styles.brandContainer}>
+        <TouchableOpacity
+          style={styles.brandContainer}
+          activeOpacity={0.8}
+          accessibilityRole="link"
+          onPress={() => router.push("/")}
+        >
           <View style={styles.logoBadge}>
             <Ionicons name="hand-left" size={24} color="#fff" />
           </View>
           <Text style={styles.brandText}>Conexion Social</Text>
-        </View>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.searchButton} activeOpacity={0.8}>
           <Ionicons name="search" size={20} color="#fff" />
         </TouchableOpacity>

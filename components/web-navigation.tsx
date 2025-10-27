@@ -57,8 +57,9 @@ export function WebNavigation() {
 const styles = StyleSheet.create({
   navBar: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
+    justifyContent: "center",
+  gap: 18,
+    paddingHorizontal: 24,
     paddingVertical: 12,
     backgroundColor: "#fff",
   },

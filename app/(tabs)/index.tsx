@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { WebNavigation } from "../../components/web-navigation";
 
 const HEADER_COLOR = "#b04570";
@@ -74,6 +74,7 @@ const actionButtons = [
 type ActionButton = (typeof actionButtons)[number];
 
 export default function Index() {
+  const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
   const { width: rawWindowWidth } = useWindowDimensions();
   const windowWidth = Math.max(rawWindowWidth, 1);
@@ -166,12 +167,17 @@ export default function Index() {
       <StatusBar barStyle="light-content" backgroundColor={HEADER_COLOR} />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContainer}>
         <View style={styles.header}>
-          <View style={styles.brandContainer}>
+          <TouchableOpacity
+            style={styles.brandContainer}
+            activeOpacity={0.8}
+            accessibilityRole="link"
+            onPress={() => router.push("/")}
+          >
             <View style={styles.logoBadge}>
               <Ionicons name="hand-left" size={24} color="#fff" />
             </View>
             <Text style={styles.brandText}>Conexión Social</Text>
-          </View>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.searchButton} activeOpacity={0.8}>
             <Ionicons name="search" size={20} color="#fff" />
           </TouchableOpacity>
@@ -230,7 +236,7 @@ export default function Index() {
           )}
         </View>
 
-        <View style={styles.actionSection}>
+        <View style={[styles.actionSection, { width: cardWidth }]}>
           {actionButtons.map((action: ActionButton) => (
             <Link key={action.id} href={action.href} asChild>
               <TouchableOpacity
@@ -353,8 +359,9 @@ const styles = StyleSheet.create({
   actionSection: {
     marginTop: 24,
     flexDirection: "row",
-    justifyContent: "space-around",
-    paddingHorizontal: 16,
+    justifyContent: "space-between",
+    gap: 24,
+    alignSelf: "center",
   },
   actionButton: {
     alignItems: "center",
