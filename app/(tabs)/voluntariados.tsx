@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import {
+  Image,
   Modal,
   SafeAreaView,
   ScrollView,
@@ -94,7 +95,11 @@ export default function VoluntariadosScreen() {
           onPress={() => router.push("/")}
         >
           <View style={styles.logoBadge}>
-            <Ionicons name="hand-left" size={24} color="#fff" />
+            <Image
+              source={require("../../assets/images/originales/logo blanco.png")}
+              style={styles.logoImage}
+              resizeMode="contain"
+            />
           </View>
           <Text style={styles.brandText}>Conexión Social</Text>
         </TouchableOpacity>
@@ -273,6 +278,10 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.25)",
     alignItems: "center",
     justifyContent: "center",
+  },
+  logoImage: {
+    width: 26,
+    height: 26,
   },
   searchButton: {
     width: 40,
