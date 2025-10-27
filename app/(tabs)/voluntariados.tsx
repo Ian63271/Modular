@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
+  Modal,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -46,11 +47,42 @@ export default function VoluntariadosScreen() {
   const { width } = useWindowDimensions();
   const [activeNav, setActiveNav] = useState<NavItem>("Home");
   const [radius, setRadius] = useState(10);
+  const [showRadiusModal, setShowRadiusModal] = useState(false);
+  const [dismissedRadius, setDismissedRadius] = useState<number | null>(null);
 
   const eventCardWidth = useMemo(() => Math.min(width - 24, 720), [width]);
+  const filteredEvents = useMemo(() => EVENTS.filter((item) => item.distanceKm <= radius), [radius]);
+  const nearestDistance = useMemo<number | null>(() => {
+    const distances = EVENTS.map((event) => event.distanceKm);
+    return distances.length ? Math.min(...distances) : null;
+  }, []);
 
   const incrementRadius = () => setRadius((value) => Math.min(value + 1, 99));
   const decrementRadius = () => setRadius((value) => Math.max(value - 1, 1));
+
+  useEffect(() => {
+    if (filteredEvents.length > 0) {
+      setShowRadiusModal(false);
+      setDismissedRadius(null);
+      return;
+    }
+
+    if (dismissedRadius !== radius) {
+      setShowRadiusModal(true);
+    }
+  }, [filteredEvents.length, radius, dismissedRadius]);
+
+  const handleDismissModal = () => {
+    setDismissedRadius(radius);
+    setShowRadiusModal(false);
+  };
+
+  const handleExpandSearch = () => {
+    const nearest = nearestDistance ?? radius;
+    const suggestedRadius = Math.max(nearest, radius + 5);
+    setDismissedRadius(null);
+    setRadius(Math.min(Math.ceil(suggestedRadius), 99));
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -91,11 +123,31 @@ export default function VoluntariadosScreen() {
       >
         <Text style={styles.screenTitle}>Voluntariados</Text>
 
-        <View style={[styles.eventList, { width: eventCardWidth }]}>
-          {EVENTS.map((event) => (
-            <EventCard key={event.id} event={event} />
-          ))}
-        </View>
+        {filteredEvents.length > 0 ? (
+          <View style={[styles.eventList, { width: eventCardWidth }]}>
+            {filteredEvents.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
+          </View>
+        ) : (
+          <View style={styles.emptyState}>
+            <Ionicons name="location-outline" size={140} color="#7a7a7a" />
+            <Text style={styles.emptyMessage}>
+              No se encontró ningún programa en el radio seleccionado [{" "}
+              <Text style={styles.emptyMessageStrong}>{radius} km</Text>
+              ].
+            </Text>
+            <Text style={styles.emptyPrompt}>¿Desea ampliar rango de búsqueda?</Text>
+            <View style={styles.emptyActions}>
+              <TouchableOpacity style={[styles.emptyButton, styles.emptyButtonPrimary]} onPress={handleExpandSearch}>
+                <Text style={styles.emptyButtonPrimaryText}>Aceptar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.emptyButton, styles.emptyButtonSecondary]} onPress={handleDismissModal}>
+                <Text style={styles.emptyButtonSecondaryText}>Regresar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
       </ScrollView>
 
       <View style={styles.mapOverlay} pointerEvents="box-none">
@@ -127,6 +179,34 @@ export default function VoluntariadosScreen() {
           </View>
         </View>
       </View>
+
+      <Modal
+        visible={showRadiusModal}
+        animationType="slide"
+        transparent
+        statusBarTranslucent
+        onRequestClose={handleDismissModal}
+      >
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalCard}>
+            <Ionicons name="location-outline" size={120} color="#666" />
+            <Text style={styles.modalMessage}>
+              No se encontró ningún programa dentro del radio seleccionado [{" "}
+              <Text style={styles.emptyMessageStrong}>{radius} km</Text>
+              ].
+            </Text>
+            <Text style={styles.modalPrompt}>¿Desea ampliar el rango de búsqueda?</Text>
+            <View style={styles.emptyActions}>
+              <TouchableOpacity style={[styles.emptyButton, styles.emptyButtonPrimary]} onPress={handleExpandSearch}>
+                <Text style={styles.emptyButtonPrimaryText}>Aceptar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.emptyButton, styles.emptyButtonSecondary]} onPress={handleDismissModal}>
+                <Text style={styles.emptyButtonSecondaryText}>Regresar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -328,6 +408,57 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#e8ecf3",
   },
+  emptyState: {
+    alignItems: "center",
+    marginTop: 32,
+    paddingHorizontal: 16,
+  },
+  emptyMessage: {
+    marginTop: 20,
+    fontSize: 16,
+    textAlign: "center",
+    color: TEXT_SECONDARY,
+    lineHeight: 24,
+  },
+  emptyMessageStrong: {
+    color: TEXT_PRIMARY,
+    fontWeight: "700",
+  },
+  emptyPrompt: {
+    marginTop: 8,
+    fontSize: 15,
+    color: TEXT_SECONDARY,
+    textAlign: "center",
+  },
+  emptyActions: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 24,
+  },
+  emptyButton: {
+    minWidth: 120,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignItems: "center",
+    marginHorizontal: 8,
+  },
+  emptyButtonPrimary: {
+    backgroundColor: HEADER_COLOR,
+  },
+  emptyButtonSecondary: {
+    backgroundColor: "#dcdde3",
+  },
+  emptyButtonPrimaryText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  emptyButtonSecondaryText: {
+    color: HEADER_COLOR,
+    fontSize: 16,
+    fontWeight: "700",
+  },
   mapOverlay: {
     position: "absolute",
     right: 24,
@@ -396,6 +527,40 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "700",
+  },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.35)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
+  },
+  modalCard: {
+    width: "100%",
+    maxWidth: 380,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    paddingHorizontal: 24,
+    paddingVertical: 28,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 8 },
+    shadowRadius: 16,
+    elevation: 10,
+  },
+  modalMessage: {
+    marginTop: 16,
+    fontSize: 16,
+    color: TEXT_PRIMARY,
+    textAlign: "center",
+    lineHeight: 24,
+  },
+  modalPrompt: {
+    marginTop: 8,
+    fontSize: 14,
+    color: TEXT_SECONDARY,
+    textAlign: "center",
   },
 });
 
