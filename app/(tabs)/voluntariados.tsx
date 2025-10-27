@@ -289,6 +289,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: TEXT_PRIMARY,
     textAlign: "center",
+    marginTop: 24,
   },
   eventList: {
     alignSelf: "center",

@@ -393,6 +393,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: TEXT_PRIMARY,
     textAlign: "center",
+    marginTop: 24,
   },
   unitList: {
     alignSelf: "center",
@@ -615,6 +616,7 @@ const styles = StyleSheet.create({
   detailsCard: {
     width: "100%",
     maxWidth: 640,
+    maxHeight: "85%",
     backgroundColor: "#fff",
     borderRadius: 20,
     paddingTop: 24,
@@ -630,6 +632,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingBottom: 16,
     gap: 20,
+    paddingTop: 8,
   },
   detailsBody: {
     gap: 18,
