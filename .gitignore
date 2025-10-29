@@ -41,3 +41,6 @@ app-example
 # generated native folders
 /ios
 /android
+assets/images/originales/favicon.psd
+.gitignore
+assets/images/originales/conexion social logo.psd

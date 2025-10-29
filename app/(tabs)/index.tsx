@@ -45,7 +45,7 @@ const carouselItems = [
     title: "Clases de arte",
     subtitle: "Programas para todas las edades",
     image:
-      "https://images.unsplash.com/photo-1508182311256-e3f7d753c783?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1459908676235-d5f02a50184b?auto=format&fit=crop&w=1740&q=80",
   },
 ];
 

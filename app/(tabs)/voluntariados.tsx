@@ -19,6 +19,9 @@ const HEADER_COLOR = "#b04570";
 const BORDER_COLOR = "#c7a6c0";
 const TEXT_PRIMARY = "#2f3542";
 const TEXT_SECONDARY = "#4d5866";
+const PROGRAM_DISCLAIMER =
+  "Este programa es público, ajeno a cualquier partido político. Queda prohibido el uso para fines distintos a los establecidos en el programa.";
+
 const EVENTS = [
   {
     id: "reforestacion",
@@ -28,6 +31,11 @@ const EVENTS = [
     date: "08/06/2025",
     distanceKm: 4,
     icon: "leaf" as const,
+    summary: "Jornada comunitaria para replantar especies nativas y recuperar zonas verdes del Cerro del 4.",
+    meetupPoint: "Punto de reunión: Parque Miravalle, entrada principal.",
+    contact: "Contacto: coordinacion@gilgilyasociados.org",
+    image: require("../../assets/images/originales/WhatsApp_Image_2025-03-18_at_11.29.34_PM-removebg-preview.png"),
+    showDisclaimer: true,
   },
   {
     id: "alimentos",
@@ -37,6 +45,67 @@ const EVENTS = [
     date: "01/04/2025",
     distanceKm: 6,
     icon: "people-circle" as const,
+    summary: "Recolección y entrega de despensas para familias de la colonia Las Juntas.",
+    meetupPoint: "Centro comunitario Agape, Calle Solidaridad #210.",
+    contact: "Contacto: 33 1234 5678",
+    image: require("../../assets/images/originales/WhatsApp_Image_2025-03-18_at_11.29.34_PM-removebg-preview.png"),
+    showDisclaimer: false,
+  },
+  {
+    id: "limpieza",
+    title: "Limpieza y recuperación Río Las Aguas",
+    organization: "Vecinos Unidos",
+    verified: true,
+    date: "15/05/2025",
+    distanceKm: 2,
+    icon: "trash" as const,
+    summary: "Actividad para limpiar la ribera del río, retirar escombros y plantar barreras vegetales para evitar la erosión.",
+    meetupPoint: "Puente La Piedad, junto al paradero.",
+    contact: "voluntariado@vecinosunidos.mx",
+    image: require("../../assets/images/originales/WhatsApp_Image_2025-03-18_at_11.29.34_PM-removebg-preview.png"),
+    showDisclaimer: true,
+  },
+  {
+    id: "tutorias",
+    title: "Tutorías para jóvenes - Centro Comunitario",
+    organization: "Fundación Aprender",
+    verified: false,
+    date: "21/04/2025",
+    distanceKm: 9,
+    icon: "school" as const,
+    summary: "Programa de apoyo escolar para estudiantes de secundaria con énfasis en matemáticas y lectura.",
+    meetupPoint: "Centro Comunitario, aula 3 (segundo piso).",
+    contact: "contacto@aprender.org",
+    image: require("../../assets/images/originales/WhatsApp_Image_2025-03-18_at_11.29.34_PM-removebg-preview.png"),
+    showDisclaimer: false,
+  },
+  {
+    id: "donacion_sangre",
+    title: "Donación de sangre - Banco Móvil",
+    organization: "Cruz Roja Delegación",
+    verified: true,
+    date: "30/04/2025",
+    distanceKm: 12,
+    icon: "heart" as const,
+    summary: "Unidad móvil para donación voluntaria de sangre. Se requiere registro previo y cumplir requisitos de salud.",
+    meetupPoint: "Estacionamiento del Mercado Central.",
+    contact: "33 9876 5432",
+    image: require("../../assets/images/originales/WhatsApp_Image_2025-03-18_at_11.29.34_PM-removebg-preview.png"),
+    showDisclaimer: true,
+  },
+  {
+    id: "apoyo_mayores",
+    title: "Acompañamiento a adultos mayores",
+    organization: "Red de Apoyo Social",
+    verified: false,
+    date: "10/06/2025",
+    distanceKm: 7,
+    icon: "people" as const,
+    summary: "Visitas domiciliarias para compañía, apoyo con compras y trámites a personas mayores en situación de vulnerabilidad.",
+    meetupPoint: "Casa del Voluntariado, recepción.",
+    contact: "apoyo@redapoyo.org",
+    image: require("../../assets/images/originales/WhatsApp_Image_2025-03-18_at_11.29.34_PM-removebg-preview.png"),
+    showDisclaimer: false,
   },
 ] as const;
 
@@ -48,6 +117,8 @@ export default function VoluntariadosScreen() {
   const [radius, setRadius] = useState(10);
   const [showRadiusModal, setShowRadiusModal] = useState(false);
   const [dismissedRadius, setDismissedRadius] = useState<number | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
+  const [previewEvent, setPreviewEvent] = useState<EventItem | null>(null);
 
   const eventCardWidth = useMemo(() => Math.min(width - 24, 720), [width]);
   const filteredEvents = useMemo(() => EVENTS.filter((item) => item.distanceKm <= radius), [radius]);
@@ -119,7 +190,12 @@ export default function VoluntariadosScreen() {
         {filteredEvents.length > 0 ? (
           <View style={[styles.eventList, { width: eventCardWidth }]}>
             {filteredEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
+              <EventCard
+                key={event.id}
+                event={event}
+                onOpenDetails={setSelectedEvent}
+                onPreviewImage={setPreviewEvent}
+              />
             ))}
           </View>
         ) : (
@@ -200,11 +276,22 @@ export default function VoluntariadosScreen() {
           </View>
         </View>
       </Modal>
+
+      <EventDetailsModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+      <EventImageModal event={previewEvent} onClose={() => setPreviewEvent(null)} />
     </SafeAreaView>
   );
 }
 
-function EventCard({ event }: { event: EventItem }) {
+function EventCard({
+  event,
+  onOpenDetails,
+  onPreviewImage,
+}: {
+  event: EventItem;
+  onOpenDetails: (event: EventItem) => void;
+  onPreviewImage: (event: EventItem) => void;
+}) {
   return (
     <View style={styles.eventCard}>
       <View style={styles.eventIconWrapper}>
@@ -237,14 +324,76 @@ function EventCard({ event }: { event: EventItem }) {
       </View>
 
       <View style={styles.eventActions}>
-        <TouchableOpacity style={styles.eventActionChip} accessibilityRole="button">
+        <TouchableOpacity
+          style={styles.eventActionChip}
+          accessibilityRole="button"
+          accessibilityLabel={`Ver imagen de ${event.title}`}
+          onPress={() => onPreviewImage(event)}
+        >
           <Ionicons name="image" size={20} color={TEXT_PRIMARY} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.eventActionChip} accessibilityRole="button">
+        <TouchableOpacity
+          style={styles.eventActionChip}
+          accessibilityRole="button"
+          accessibilityLabel={`Ver detalles de ${event.title}`}
+          onPress={() => onOpenDetails(event)}
+        >
           <Ionicons name="document-text" size={20} color={TEXT_PRIMARY} />
         </TouchableOpacity>
       </View>
     </View>
+  );
+}
+
+function EventDetailsModal({ event, onClose }: { event: EventItem | null; onClose: () => void }) {
+  return (
+    <Modal visible={Boolean(event)} animationType="slide" transparent statusBarTranslucent onRequestClose={onClose}>
+      <View style={styles.detailsBackdrop}>
+        <View style={styles.detailsCard}>
+          {event && (
+            <>
+              <Text style={styles.detailsTitle}>{event.title}</Text>
+              <View style={styles.detailsSection}>
+                <Ionicons name={event.icon} size={40} color={HEADER_COLOR} style={styles.detailsIcon} />
+                <View style={styles.detailsTextGroup}>
+                  <Text style={styles.detailsLabel}>Organiza:</Text>
+                  <Text style={styles.detailsValue}>{event.organization}</Text>
+                  <Text style={styles.detailsLabel}>Fecha:</Text>
+                  <Text style={styles.detailsValue}>{event.date}</Text>
+                </View>
+              </View>
+              <Text style={styles.detailsSummary}>{event.summary}</Text>
+              <Text style={styles.detailsSecondary}>{event.meetupPoint}</Text>
+              <Text style={styles.detailsSecondary}>{event.contact}</Text>
+              {event.showDisclaimer && <Text style={styles.detailsDisclaimer}>{PROGRAM_DISCLAIMER}</Text>}
+              <TouchableOpacity style={styles.detailsCloseButton} onPress={onClose} accessibilityRole="button">
+                <Text style={styles.detailsCloseText}>Cerrar</Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+function EventImageModal({ event, onClose }: { event: EventItem | null; onClose: () => void }) {
+  return (
+    <Modal visible={Boolean(event)} animationType="fade" transparent statusBarTranslucent onRequestClose={onClose}>
+      <View style={styles.imageModalBackdrop}>
+        <View style={styles.imageModalCard}>
+          {event && (
+            <>
+              <Image source={event.image} style={styles.imageModalImage} resizeMode="contain" />
+              <Text style={styles.imageModalCaption}>{event.title}</Text>
+              <TouchableOpacity style={styles.imageModalCloseButton} onPress={onClose} accessibilityRole="button">
+                <Text style={styles.imageModalCloseText}>Cerrar</Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+      </View>
+    </Modal>
   );
 }
 
@@ -536,6 +685,122 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: TEXT_SECONDARY,
     textAlign: "center",
+  },
+  detailsBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.35)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
+  },
+  detailsCard: {
+    width: "100%",
+    maxWidth: 420,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    paddingHorizontal: 24,
+    paddingVertical: 28,
+    gap: 16,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 8 },
+    shadowRadius: 16,
+    elevation: 10,
+  },
+  detailsTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: TEXT_PRIMARY,
+    textAlign: "center",
+  },
+  detailsSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+  },
+  detailsIcon: {
+    backgroundColor: "#f7f0f4",
+    borderRadius: 20,
+    padding: 10,
+  },
+  detailsTextGroup: {
+    flex: 1,
+    gap: 6,
+  },
+  detailsLabel: {
+    fontSize: 13,
+    color: TEXT_SECONDARY,
+  },
+  detailsValue: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: TEXT_PRIMARY,
+  },
+  detailsSummary: {
+    fontSize: 15,
+    color: TEXT_PRIMARY,
+    lineHeight: 22,
+  },
+  detailsSecondary: {
+    fontSize: 14,
+    color: TEXT_SECONDARY,
+  },
+  detailsDisclaimer: {
+    fontSize: 12,
+    color: TEXT_SECONDARY,
+    fontStyle: "italic",
+    textAlign: "center",
+  },
+  detailsCloseButton: {
+    marginTop: 8,
+    alignSelf: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 24,
+    backgroundColor: HEADER_COLOR,
+  },
+  detailsCloseText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  imageModalBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
+  },
+  imageModalCard: {
+    width: "100%",
+    maxWidth: 500,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 16,
+    alignItems: "center",
+    gap: 16,
+  },
+  imageModalImage: {
+    width: "100%",
+    height: 260,
+    borderRadius: 12,
+  },
+  imageModalCaption: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: TEXT_PRIMARY,
+    textAlign: "center",
+  },
+  imageModalCloseButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    backgroundColor: HEADER_COLOR,
+  },
+  imageModalCloseText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "600",
   },
 });
 

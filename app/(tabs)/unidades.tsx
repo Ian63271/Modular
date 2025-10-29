@@ -143,7 +143,7 @@ export default function UnidadesScreen() {
               resizeMode="contain"
             />
           </View>
-          <Text style={styles.brandText}>Conexion Social</Text>
+          <Text style={styles.brandText}>Conexión Social</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.searchButton} activeOpacity={0.8}>
           <Ionicons name="search" size={20} color="#fff" />

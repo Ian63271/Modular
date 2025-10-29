@@ -19,6 +19,9 @@ const HEADER_COLOR = "#b04570";
 const BORDER_COLOR = "#c7a6c0";
 const TEXT_PRIMARY = "#2f3542";
 const TEXT_SECONDARY = "#4d5866";
+const PROGRAM_DISCLAIMER =
+  "Este programa es público, ajeno a cualquier partido político. Queda prohibido el uso para fines distintos a los establecidos en el programa.";
+
 const EVENTS = [
   {
     id: "guitarra",
@@ -28,6 +31,11 @@ const EVENTS = [
     date: "Miercoles 04:00 p.m",
     distanceKm: 3,
     icon: "musical-notes" as const,
+    summary: "Sesiones introductorias de guitarra acústica para adolescentes y jóvenes con interés en la música.",
+    meetupPoint: "Plaza Cívica Miravalle, kiosko central.",
+    contact: "Contacto: 33 4444 9911",
+    image: require("../../assets/images/originales/logo color.png"),
+    showDisclaimer: true,
   },
   {
     id: "ingles",
@@ -37,6 +45,67 @@ const EVENTS = [
     date: "Multiples horarios (consultar ficha)",
     distanceKm: 1.4,
     icon: "language" as const,
+    summary: "Curso de conversación en inglés con grupos reducidos y enfoque en situaciones cotidianas.",
+    meetupPoint: "World A&B, aula 2.",
+    contact: "Contacto: coordinacion@worldab.edu",
+    image: require("../../assets/images/originales/logo color.png"),
+    showDisclaimer: false,
+  },
+  {
+    id: "pintura",
+    title: "Taller de Pintura para Adultos",
+    organization: "Casa de la Cultura Miravalle",
+    verified: true,
+    date: "Lunes y Jueves 10:00 a.m.",
+    distanceKm: 0.7,
+    icon: "brush" as const,
+    summary: "Técnicas básicas de acuarela y acrílico orientadas a adultos; materiales incluidos.",
+    meetupPoint: "Sala 3, Casa de la Cultura.",
+    contact: "Contacto: 33 5555 2233",
+    image: require("../../assets/images/originales/logo color.png"),
+    showDisclaimer: true,
+  },
+  {
+    id: "yoga",
+    title: "Yoga Comunitario al Aire Libre",
+    organization: "Red Saludable",
+    verified: false,
+    date: "Domingos 08:00 a.m.",
+    distanceKm: 5,
+    icon: "people" as const,
+    summary: "Sesiones de yoga suave y meditación para todas las edades; trae tu esterilla.",
+    meetupPoint: "Parque Central, zona norte.",
+    contact: "Contacto: redesalud@ejemplo.org",
+    image: require("../../assets/images/originales/logo color.png"),
+    showDisclaimer: false,
+  },
+  {
+    id: "informatica",
+    title: "Curso Básico de Informática",
+    organization: "Centro Juvenil Tec",
+    verified: true,
+    date: "Martes y Viernes 03:00 p.m.",
+    distanceKm: 12,
+    icon: "laptop" as const,
+    summary: "Introducción a ofimática, internet y seguridad digital para adultos y jóvenes.",
+    meetupPoint: "Aula 1, Centro Juvenil Tec.",
+    contact: "Contacto: inscripciones@cjtec.mx",
+    image: require("../../assets/images/originales/logo color.png"),
+    showDisclaimer: false,
+  },
+  {
+    id: "danza",
+    title: "Danza Folklórica para Jóvenes",
+    organization: "Compañía Danza Viva",
+    verified: false,
+    date: "Sábados 05:00 p.m.",
+    distanceKm: 25,
+    icon: "musical-notes" as const,
+    summary: "Clases de baile folklórico regional, promoción de identidad cultural y presentaciones comunitarias.",
+    meetupPoint: "Auditorio municipal, entrada principal.",
+    contact: "Contacto: 33 7777 8800",
+    image: require("../../assets/images/originales/logo color.png"),
+    showDisclaimer: true,
   },
 ] as const;
 
@@ -48,6 +117,8 @@ export default function TalleresScreen() {
   const [radius, setRadius] = useState(10);
   const [showRadiusModal, setShowRadiusModal] = useState(false);
   const [dismissedRadius, setDismissedRadius] = useState<number | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
+  const [previewEvent, setPreviewEvent] = useState<EventItem | null>(null);
 
   const eventCardWidth = useMemo(() => Math.min(width - 24, 720), [width]);
   const filteredEvents = useMemo(() => EVENTS.filter((item) => item.distanceKm <= radius), [radius]);
@@ -119,7 +190,12 @@ export default function TalleresScreen() {
         {filteredEvents.length > 0 ? (
           <View style={[styles.eventList, { width: eventCardWidth }]}>
             {filteredEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
+              <EventCard
+                key={event.id}
+                event={event}
+                onOpenDetails={setSelectedEvent}
+                onPreviewImage={setPreviewEvent}
+              />
             ))}
           </View>
         ) : (
@@ -200,11 +276,22 @@ export default function TalleresScreen() {
           </View>
         </View>
       </Modal>
+
+      <EventDetailsModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+      <EventImageModal event={previewEvent} onClose={() => setPreviewEvent(null)} />
     </SafeAreaView>
   );
 }
 
-function EventCard({ event }: { event: EventItem }) {
+function EventCard({
+  event,
+  onOpenDetails,
+  onPreviewImage,
+}: {
+  event: EventItem;
+  onOpenDetails: (event: EventItem) => void;
+  onPreviewImage: (event: EventItem) => void;
+}) {
   return (
     <View style={styles.eventCard}>
       <View style={styles.eventIconWrapper}>
@@ -237,14 +324,76 @@ function EventCard({ event }: { event: EventItem }) {
       </View>
 
       <View style={styles.eventActions}>
-        <TouchableOpacity style={styles.eventActionChip} accessibilityRole="button">
+        <TouchableOpacity
+          style={styles.eventActionChip}
+          accessibilityRole="button"
+          accessibilityLabel={`Ver imagen de ${event.title}`}
+          onPress={() => onPreviewImage(event)}
+        >
           <Ionicons name="image" size={20} color={TEXT_PRIMARY} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.eventActionChip} accessibilityRole="button">
+        <TouchableOpacity
+          style={styles.eventActionChip}
+          accessibilityRole="button"
+          accessibilityLabel={`Ver detalles de ${event.title}`}
+          onPress={() => onOpenDetails(event)}
+        >
           <Ionicons name="document-text" size={20} color={TEXT_PRIMARY} />
         </TouchableOpacity>
       </View>
     </View>
+  );
+}
+
+function EventDetailsModal({ event, onClose }: { event: EventItem | null; onClose: () => void }) {
+  return (
+    <Modal visible={Boolean(event)} animationType="slide" transparent statusBarTranslucent onRequestClose={onClose}>
+      <View style={styles.detailsBackdrop}>
+        <View style={styles.detailsCard}>
+          {event && (
+            <>
+              <Text style={styles.detailsTitle}>{event.title}</Text>
+              <View style={styles.detailsSection}>
+                <Ionicons name={event.icon} size={40} color={HEADER_COLOR} style={styles.detailsIcon} />
+                <View style={styles.detailsTextGroup}>
+                  <Text style={styles.detailsLabel}>Organiza:</Text>
+                  <Text style={styles.detailsValue}>{event.organization}</Text>
+                  <Text style={styles.detailsLabel}>Horario:</Text>
+                  <Text style={styles.detailsValue}>{event.date}</Text>
+                </View>
+              </View>
+              <Text style={styles.detailsSummary}>{event.summary}</Text>
+              <Text style={styles.detailsSecondary}>{event.meetupPoint}</Text>
+              <Text style={styles.detailsSecondary}>{event.contact}</Text>
+              {event.showDisclaimer && <Text style={styles.detailsDisclaimer}>{PROGRAM_DISCLAIMER}</Text>}
+              <TouchableOpacity style={styles.detailsCloseButton} onPress={onClose} accessibilityRole="button">
+                <Text style={styles.detailsCloseText}>Cerrar</Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+function EventImageModal({ event, onClose }: { event: EventItem | null; onClose: () => void }) {
+  return (
+    <Modal visible={Boolean(event)} animationType="fade" transparent statusBarTranslucent onRequestClose={onClose}>
+      <View style={styles.imageModalBackdrop}>
+        <View style={styles.imageModalCard}>
+          {event && (
+            <>
+              <Image source={event.image} style={styles.imageModalImage} resizeMode="contain" />
+              <Text style={styles.imageModalCaption}>{event.title}</Text>
+              <TouchableOpacity style={styles.imageModalCloseButton} onPress={onClose} accessibilityRole="button">
+                <Text style={styles.imageModalCloseText}>Cerrar</Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+      </View>
+    </Modal>
   );
 }
 
@@ -536,6 +685,122 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: TEXT_SECONDARY,
     textAlign: "center",
+  },
+  detailsBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.35)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
+  },
+  detailsCard: {
+    width: "100%",
+    maxWidth: 420,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    paddingHorizontal: 24,
+    paddingVertical: 28,
+    gap: 16,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 8 },
+    shadowRadius: 16,
+    elevation: 10,
+  },
+  detailsTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: TEXT_PRIMARY,
+    textAlign: "center",
+  },
+  detailsSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+  },
+  detailsIcon: {
+    backgroundColor: "#f7f0f4",
+    borderRadius: 20,
+    padding: 10,
+  },
+  detailsTextGroup: {
+    flex: 1,
+    gap: 6,
+  },
+  detailsLabel: {
+    fontSize: 13,
+    color: TEXT_SECONDARY,
+  },
+  detailsValue: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: TEXT_PRIMARY,
+  },
+  detailsSummary: {
+    fontSize: 15,
+    color: TEXT_PRIMARY,
+    lineHeight: 22,
+  },
+  detailsSecondary: {
+    fontSize: 14,
+    color: TEXT_SECONDARY,
+  },
+  detailsDisclaimer: {
+    fontSize: 12,
+    color: TEXT_SECONDARY,
+    fontStyle: "italic",
+    textAlign: "center",
+  },
+  detailsCloseButton: {
+    marginTop: 8,
+    alignSelf: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 24,
+    backgroundColor: HEADER_COLOR,
+  },
+  detailsCloseText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  imageModalBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
+  },
+  imageModalCard: {
+    width: "100%",
+    maxWidth: 500,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 16,
+    alignItems: "center",
+    gap: 16,
+  },
+  imageModalImage: {
+    width: "100%",
+    height: 260,
+    borderRadius: 12,
+  },
+  imageModalCaption: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: TEXT_PRIMARY,
+    textAlign: "center",
+  },
+  imageModalCloseButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    backgroundColor: HEADER_COLOR,
+  },
+  imageModalCloseText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "600",
   },
 });
 
