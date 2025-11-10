@@ -18,7 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Link, useRouter } from "expo-router";
 import { WebNavigation } from "../../components/web-navigation";
 
-const HEADER_COLOR = "#b04570";
+const HEADER_COLOR = "#508ccb";
 const AUTO_SCROLL_INTERVAL = 5000;
 const CARD_ASPECT_RATIO = 0.56;
 const MAX_CARD_WIDTH = 720;
@@ -31,7 +31,7 @@ const carouselItems = [
     title: "Colecta de alimentos",
     subtitle: "Apoya la iniciativa [Caritas]",
     image:
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1400&q=80",
+      "https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?auto=format&fit=crop&w=1740&q=80",
   },
   {
     id: "2",
@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   carouselOverlay: {
-    backgroundColor: "rgba(176, 69, 112, 0.55)",
+    backgroundColor: "rgba(80, 140, 203, 0.55)",
     padding: 16,
   },
   carouselTitle: {
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
     borderRadius: 21,
     backgroundColor: "rgba(255,255,255,0.92)",
     borderWidth: 1,
-    borderColor: "rgba(176,69,112,0.35)",
+    borderColor: "rgba(80,140,203,0.35)",
     alignItems: "center",
     justifyContent: "center",
   },

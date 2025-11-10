@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { Platform } from "react-native";
 
-const HEADER_COLOR = "#b04570";
+const HEADER_COLOR = "#508ccb";
 
 export default function TabsLayout() {
   const isWeb = Platform.OS === "web";

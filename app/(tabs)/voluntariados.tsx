@@ -15,8 +15,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { WebNavigation } from "../../components/web-navigation";
 
-const HEADER_COLOR = "#b04570";
-const BORDER_COLOR = "#c7a6c0";
+const HEADER_COLOR = "#508ccb";
+const BORDER_COLOR = "#9cbde5";
+const MUTED_CHIP_BACKGROUND = "#e5edf8";
+const SECONDARY_BUTTON_BACKGROUND = "#d6e6f9";
+const SECONDARY_ACCENT = "#3f6fa5";
 const TEXT_PRIMARY = "#2f3542";
 const TEXT_SECONDARY = "#4d5866";
 const PROGRAM_DISCLAIMER =
@@ -34,7 +37,7 @@ const EVENTS = [
     summary: "Jornada comunitaria para replantar especies nativas y recuperar zonas verdes del Cerro del 4.",
     meetupPoint: "Punto de reunión: Parque Miravalle, entrada principal.",
     contact: "Contacto: coordinacion@gilgilyasociados.org",
-    image: require("../../assets/images/originales/WhatsApp_Image_2025-03-18_at_11.29.34_PM-removebg-preview.png"),
+    image: require("../../assets/images/originales/logo color.png"),
     showDisclaimer: true,
   },
   {
@@ -48,7 +51,7 @@ const EVENTS = [
     summary: "Recolección y entrega de despensas para familias de la colonia Las Juntas.",
     meetupPoint: "Centro comunitario Agape, Calle Solidaridad #210.",
     contact: "Contacto: 33 1234 5678",
-    image: require("../../assets/images/originales/WhatsApp_Image_2025-03-18_at_11.29.34_PM-removebg-preview.png"),
+    image: require("../../assets/images/originales/logo color.png"),
     showDisclaimer: false,
   },
   {
@@ -62,7 +65,7 @@ const EVENTS = [
     summary: "Actividad para limpiar la ribera del río, retirar escombros y plantar barreras vegetales para evitar la erosión.",
     meetupPoint: "Puente La Piedad, junto al paradero.",
     contact: "voluntariado@vecinosunidos.mx",
-    image: require("../../assets/images/originales/WhatsApp_Image_2025-03-18_at_11.29.34_PM-removebg-preview.png"),
+    image: require("../../assets/images/originales/logo color.png"),
     showDisclaimer: true,
   },
   {
@@ -76,7 +79,7 @@ const EVENTS = [
     summary: "Programa de apoyo escolar para estudiantes de secundaria con énfasis en matemáticas y lectura.",
     meetupPoint: "Centro Comunitario, aula 3 (segundo piso).",
     contact: "contacto@aprender.org",
-    image: require("../../assets/images/originales/WhatsApp_Image_2025-03-18_at_11.29.34_PM-removebg-preview.png"),
+    image: require("../../assets/images/originales/logo color.png"),
     showDisclaimer: false,
   },
   {
@@ -90,7 +93,7 @@ const EVENTS = [
     summary: "Unidad móvil para donación voluntaria de sangre. Se requiere registro previo y cumplir requisitos de salud.",
     meetupPoint: "Estacionamiento del Mercado Central.",
     contact: "33 9876 5432",
-    image: require("../../assets/images/originales/WhatsApp_Image_2025-03-18_at_11.29.34_PM-removebg-preview.png"),
+    image: require("../../assets/images/originales/logo color.png"),
     showDisclaimer: true,
   },
   {
@@ -104,7 +107,7 @@ const EVENTS = [
     summary: "Visitas domiciliarias para compañía, apoyo con compras y trámites a personas mayores en situación de vulnerabilidad.",
     meetupPoint: "Casa del Voluntariado, recepción.",
     contact: "apoyo@redapoyo.org",
-    image: require("../../assets/images/originales/WhatsApp_Image_2025-03-18_at_11.29.34_PM-removebg-preview.png"),
+    image: require("../../assets/images/originales/logo color.png"),
     showDisclaimer: false,
   },
 ] as const;
@@ -530,7 +533,7 @@ const styles = StyleSheet.create({
     borderRadius: 21,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#e8ecf3",
+    backgroundColor: MUTED_CHIP_BACKGROUND,
   },
   emptyState: {
     alignItems: "center",
@@ -571,7 +574,7 @@ const styles = StyleSheet.create({
     backgroundColor: HEADER_COLOR,
   },
   emptyButtonSecondary: {
-    backgroundColor: "#dcdde3",
+    backgroundColor: SECONDARY_BUTTON_BACKGROUND,
   },
   emptyButtonPrimaryText: {
     color: "#fff",
@@ -642,7 +645,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   radiusButtonSecondary: {
-    backgroundColor: "#b45a7a",
+    backgroundColor: SECONDARY_ACCENT,
   },
   radiusButtonPrimary: {
     backgroundColor: HEADER_COLOR,
@@ -719,7 +722,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   detailsIcon: {
-    backgroundColor: "#f7f0f4",
+    backgroundColor: MUTED_CHIP_BACKGROUND,
     borderRadius: 20,
     padding: 10,
   },

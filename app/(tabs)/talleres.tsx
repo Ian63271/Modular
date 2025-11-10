@@ -15,8 +15,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { WebNavigation } from "../../components/web-navigation";
 
-const HEADER_COLOR = "#b04570";
-const BORDER_COLOR = "#c7a6c0";
+const HEADER_COLOR = "#508ccb";
+const BORDER_COLOR = "#9cbde5";
+const MUTED_CHIP_BACKGROUND = "#e5edf8";
+const SECONDARY_BUTTON_BACKGROUND = "#d6e6f9";
+const SECONDARY_ACCENT = "#3f6fa5";
 const TEXT_PRIMARY = "#2f3542";
 const TEXT_SECONDARY = "#4d5866";
 const PROGRAM_DISCLAIMER =
@@ -530,7 +533,7 @@ const styles = StyleSheet.create({
     borderRadius: 21,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#e8ecf3",
+    backgroundColor: MUTED_CHIP_BACKGROUND,
   },
   emptyState: {
     alignItems: "center",
@@ -571,7 +574,7 @@ const styles = StyleSheet.create({
     backgroundColor: HEADER_COLOR,
   },
   emptyButtonSecondary: {
-    backgroundColor: "#dcdde3",
+    backgroundColor: SECONDARY_BUTTON_BACKGROUND,
   },
   emptyButtonPrimaryText: {
     color: "#fff",
@@ -642,7 +645,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   radiusButtonSecondary: {
-    backgroundColor: "#b45a7a",
+    backgroundColor: SECONDARY_ACCENT,
   },
   radiusButtonPrimary: {
     backgroundColor: HEADER_COLOR,
@@ -719,7 +722,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   detailsIcon: {
-    backgroundColor: "#f7f0f4",
+    backgroundColor: MUTED_CHIP_BACKGROUND,
     borderRadius: 20,
     padding: 10,
   },

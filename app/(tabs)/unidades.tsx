@@ -15,8 +15,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { WebNavigation } from "../../components/web-navigation";
 
-const HEADER_COLOR = "#b04570";
-const BORDER_COLOR = "#c7a6c0";
+const HEADER_COLOR = "#508ccb";
+const BORDER_COLOR = "#9cbde5";
+const MUTED_CHIP_BACKGROUND = "#e5edf8";
+const SECONDARY_BUTTON_BACKGROUND = "#d6e6f9";
+const SECONDARY_ACCENT = "#3f6fa5";
+const NOTES_BACKGROUND = "#f0f6fc";
+const PROGRAM_ICON_BACKGROUND = "#e8f2fc";
 const TEXT_PRIMARY = "#2f3542";
 const TEXT_SECONDARY = "#4d5866";
 
@@ -507,7 +512,7 @@ const styles = StyleSheet.create({
     backgroundColor: HEADER_COLOR,
   },
   emptyButtonSecondary: {
-    backgroundColor: "#dcdde3",
+    backgroundColor: SECONDARY_BUTTON_BACKGROUND,
   },
   emptyButtonPrimaryText: {
     color: "#fff",
@@ -578,7 +583,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   radiusButtonSecondary: {
-    backgroundColor: "#b45a7a",
+    backgroundColor: SECONDARY_ACCENT,
   },
   radiusButtonPrimary: {
     backgroundColor: HEADER_COLOR,
@@ -672,7 +677,7 @@ const styles = StyleSheet.create({
     borderColor: BORDER_COLOR,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#f7f0f4",
+    backgroundColor: MUTED_CHIP_BACKGROUND,
   },
   detailsMeta: {
     flex: 1,
@@ -692,7 +697,7 @@ const styles = StyleSheet.create({
     borderColor: BORDER_COLOR,
     borderRadius: 12,
     padding: 14,
-    backgroundColor: "#faf5f7",
+    backgroundColor: NOTES_BACKGROUND,
   },
   detailsNotes: {
     fontSize: 14,
@@ -725,7 +730,7 @@ const styles = StyleSheet.create({
     borderColor: BORDER_COLOR,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#f1f4f9",
+    backgroundColor: PROGRAM_ICON_BACKGROUND,
   },
   programInfo: {
     flex: 1,
@@ -755,7 +760,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#e6e9f2",
+    backgroundColor: MUTED_CHIP_BACKGROUND,
   },
   detailsCloseButton: {
     marginTop: 8,
