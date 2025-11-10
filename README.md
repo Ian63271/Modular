@@ -1,50 +1,61 @@
-# Welcome to your Expo app 👋
+# Conexión Social – Plataforma de Voluntariado Digital
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Repositorio oficial: https://github.com/Ian63271/Modular
 
-## Get started
+## Resumen
 
-1. Install dependencies
+Este proyecto desarrolla un sistema multiplataforma que centraliza la gestión, promoción y seguimiento de proyectos sociales y programas de voluntariado locales. La solución mejora la comunicación entre ciudadanía, instituciones y organizaciones mediante una interfaz accesible, segura y adaptable. La arquitectura cliente-servidor emplea tecnologías abiertas como React Native, Node.js, PostgreSQL y Supabase, priorizando la escalabilidad y el mantenimiento. Se integran módulos de geolocalización e inteligencia artificial (Dialogflow y scikit-learn) para ofrecer experiencias personalizadas y contextuales.
+
+## Introducción
+
+La difusión de voluntariados, talleres y campañas sociales suele fragmentarse por la ausencia de herramientas tecnológicas centralizadas, lo que limita la comunicación y reduce el alcance comunitario. Con el fin de atender esta problemática, se propone un sistema digital integral que concentre la gestión de voluntariados, talleres y unidades receptoras en una sola plataforma.
+
+Entre las innovaciones clave se incluye la localización geográfica de iniciativas, priorizando actividades cercanas al usuario y fomentando la participación ciudadana inmediata. La digitalización de la difusión contribuye, además, a la sostenibilidad ambiental al disminuir el uso de materiales impresos y los residuos asociados.
+
+## Objetivos del Proyecto
+
+- Centralizar la información y seguimiento de programas sociales locales.
+- Facilitar la participación ciudadana mediante herramientas de geolocalización.
+- Reducir costos y uso de materiales impresos, promoviendo alternativas digitales sostenibles.
+- Incorporar automatización e inteligencia artificial para ofrecer experiencias personalizadas.
+
+## Desarrollo del Proyecto
+
+El sistema se implementa inicialmente como una aplicación web accesible desde navegadores convencionales, respetando una arquitectura cliente-servidor que soporta la evolución hacia dispositivos móviles. La metodología de trabajo es Kanban, lo que habilitó entregas iterativas, integración continua y pruebas automatizadas para asegurar la calidad.
+
+### Tecnologías Principales
+
+- **Front-end:** React Native con Expo Router (compatible web, iOS y Android).
+- **Back-end / Servicios:** Node.js, Supabase, PostgreSQL.
+- **Inteligencia Artificial:** Dialogflow, scikit-learn.
+- **Geolocalización:** APIs de ubicación para priorizar proyectos cercanos.
+
+## Resultados y Alcance
+
+- Alta aceptación por parte de usuarios piloto al gestionar actividades desde la plataforma.
+- Mayor visibilidad y coordinación de programas gracias a la centralización de información.
+- Contribución a la sostenibilidad ambiental mediante la reducción de impresos.
+
+## Puesta en Marcha
+
+1. Instalar dependencias:
 
    ```bash
    npm install
    ```
 
-2. Start the app
+2. Ejecutar el entorno de desarrollo:
 
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+3. Seleccionar la opción deseada (Expo Go, emulador Android/iOS o navegador) y seguir las instrucciones en consola. El código fuente principal se encuentra en el directorio `app/` y utiliza enrutamiento basado en archivos.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Contribuciones
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Se agradecen issues y pull requests que fortalezcan la plataforma o amplíen sus módulos (geolocalización, IA conversacional, accesibilidad, etc.). Para cambios mayores, abre primero un issue que permita discutir la propuesta.
 
-## Get a fresh project
+## Licencia
 
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Este proyecto se distribuye bajo la **MIT License**. Consulta el archivo `LICENSE` para obtener el texto completo.
