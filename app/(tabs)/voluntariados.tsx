@@ -37,7 +37,7 @@ const EVENTS = [
     summary: "Jornada comunitaria para replantar especies nativas y recuperar zonas verdes del Cerro del 4.",
     meetupPoint: "Punto de reunión: Parque Miravalle, entrada principal.",
     contact: "Contacto: coordinacion@gilgilyasociados.org",
-    image: require("../../assets/images/originales/logo color.png"),
+    image: require("../../assets/images/voluntariados/reforestacion.png"),
     showDisclaimer: true,
   },
   {
@@ -51,7 +51,7 @@ const EVENTS = [
     summary: "Recolección y entrega de despensas para familias de la colonia Las Juntas.",
     meetupPoint: "Centro comunitario Agape, Calle Solidaridad #210.",
     contact: "Contacto: 33 1234 5678",
-    image: require("../../assets/images/originales/logo color.png"),
+    image: require("../../assets/images/voluntariados/alimentos.png"),
     showDisclaimer: false,
   },
   {
@@ -65,7 +65,7 @@ const EVENTS = [
     summary: "Actividad para limpiar la ribera del río, retirar escombros y plantar barreras vegetales para evitar la erosión.",
     meetupPoint: "Puente La Piedad, junto al paradero.",
     contact: "voluntariado@vecinosunidos.mx",
-    image: require("../../assets/images/originales/logo color.png"),
+    image: require("../../assets/images/voluntariados/limpieza.png"),
     showDisclaimer: true,
   },
   {
@@ -79,7 +79,7 @@ const EVENTS = [
     summary: "Programa de apoyo escolar para estudiantes de secundaria con énfasis en matemáticas y lectura.",
     meetupPoint: "Centro Comunitario, aula 3 (segundo piso).",
     contact: "contacto@aprender.org",
-    image: require("../../assets/images/originales/logo color.png"),
+    image: require("../../assets/images/voluntariados/tutorias.png"),
     showDisclaimer: false,
   },
   {
@@ -93,7 +93,7 @@ const EVENTS = [
     summary: "Unidad móvil para donación voluntaria de sangre. Se requiere registro previo y cumplir requisitos de salud.",
     meetupPoint: "Estacionamiento del Mercado Central.",
     contact: "33 9876 5432",
-    image: require("../../assets/images/originales/logo color.png"),
+    image: require("../../assets/images/voluntariados/donacion_sangre.png"),
     showDisclaimer: true,
   },
   {
@@ -107,7 +107,7 @@ const EVENTS = [
     summary: "Visitas domiciliarias para compañía, apoyo con compras y trámites a personas mayores en situación de vulnerabilidad.",
     meetupPoint: "Casa del Voluntariado, recepción.",
     contact: "apoyo@redapoyo.org",
-    image: require("../../assets/images/originales/logo color.png"),
+    image: require("../../assets/images/voluntariados/apoyo_mayores.png"),
     showDisclaimer: false,
   },
 ] as const;

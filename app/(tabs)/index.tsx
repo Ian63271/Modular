@@ -31,21 +31,21 @@ const carouselItems = [
     title: "Colecta de alimentos",
     subtitle: "Apoya la iniciativa [Caritas]",
     image:
-      "https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?auto=format&fit=crop&w=1740&q=80",
+      require("../../assets/images/index/1.png"),
   },
   {
     id: "2",
     title: "Brigadas de salud",
     subtitle: "Jornadas comunitarias",
     image:
-      "https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=1400&q=80",
+      require("../../assets/images/index/2.png"),
   },
   {
     id: "3",
     title: "Clases de arte",
     subtitle: "Programas para todas las edades",
     image:
-      "https://images.unsplash.com/photo-1459908676235-d5f02a50184b?auto=format&fit=crop&w=1740&q=80",
+      require("../../assets/images/index/3.png"),
   },
 ];
 
@@ -204,7 +204,7 @@ export default function Index() {
             renderItem={({ item }) => (
               <View style={[styles.carouselSlide, { width: windowWidth }]}> 
                 <ImageBackground
-                  source={{ uri: item.image }}
+                  source={item.image}
                   style={[styles.carouselImage, { width: cardWidth, height: cardHeight }]}
                   imageStyle={styles.carouselImageBackground}
                   resizeMode="cover"

@@ -37,7 +37,7 @@ const EVENTS = [
     summary: "Sesiones introductorias de guitarra acústica para adolescentes y jóvenes con interés en la música.",
     meetupPoint: "Plaza Cívica Miravalle, kiosko central.",
     contact: "Contacto: 33 4444 9911",
-    image: require("../../assets/images/originales/logo color.png"),
+    image: require("../../assets/images/talleres/guitarra.png"),
     showDisclaimer: true,
   },
   {
@@ -51,7 +51,7 @@ const EVENTS = [
     summary: "Curso de conversación en inglés con grupos reducidos y enfoque en situaciones cotidianas.",
     meetupPoint: "World A&B, aula 2.",
     contact: "Contacto: coordinacion@worldab.edu",
-    image: require("../../assets/images/originales/logo color.png"),
+    image: require("../../assets/images/talleres/ingles.png"),
     showDisclaimer: false,
   },
   {
@@ -65,7 +65,7 @@ const EVENTS = [
     summary: "Técnicas básicas de acuarela y acrílico orientadas a adultos; materiales incluidos.",
     meetupPoint: "Sala 3, Casa de la Cultura.",
     contact: "Contacto: 33 5555 2233",
-    image: require("../../assets/images/originales/logo color.png"),
+    image: require("../../assets/images/talleres/pintura.png"),
     showDisclaimer: true,
   },
   {
@@ -79,7 +79,7 @@ const EVENTS = [
     summary: "Sesiones de yoga suave y meditación para todas las edades; trae tu esterilla.",
     meetupPoint: "Parque Central, zona norte.",
     contact: "Contacto: redesalud@ejemplo.org",
-    image: require("../../assets/images/originales/logo color.png"),
+    image: require("../../assets/images/talleres/yoga.png"),
     showDisclaimer: false,
   },
   {
@@ -93,7 +93,7 @@ const EVENTS = [
     summary: "Introducción a ofimática, internet y seguridad digital para adultos y jóvenes.",
     meetupPoint: "Aula 1, Centro Juvenil Tec.",
     contact: "Contacto: inscripciones@cjtec.mx",
-    image: require("../../assets/images/originales/logo color.png"),
+    image: require("../../assets/images/talleres/informatica.png"),
     showDisclaimer: false,
   },
   {
@@ -107,7 +107,7 @@ const EVENTS = [
     summary: "Clases de baile folklórico regional, promoción de identidad cultural y presentaciones comunitarias.",
     meetupPoint: "Auditorio municipal, entrada principal.",
     contact: "Contacto: 33 7777 8800",
-    image: require("../../assets/images/originales/logo color.png"),
+    image: require("../../assets/images/talleres/danza.png"),
     showDisclaimer: true,
   },
 ] as const;
